@@ -1,0 +1,23 @@
+{
+  "name": "infinite_scroll",
+  "version": "0.1.1",
+  "description": "",
+  "main": "infiniteScroll.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yeehone/infiniteScroll.git"
+  },
+  "keywords": [
+    "scroll",
+    "infinite"
+  ],
+  "author": "yeehoneliu",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/yeehone/infiniteScroll/issues"
+  },
+  "homepage": "https://github.com/yeehone/infiniteScroll#readme"
+}

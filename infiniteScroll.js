@@ -6,12 +6,19 @@ var InfiniteScroll = function(opt) {
 	self.container = opt.container;
 	self.wrapper = opt.wrapper || 'div';
 	self.throttleTime = opt.throttleTime || 300;
+	self.range = opt.range || 2;
 
 	if (!self.container) {
 		throw new Error("Error! Could not find container");
 	}
 
 	InfiniteScroll.viewportHeight = document.documentElement.clientHeight;
+
+	var tmp = [];
+	for (var i = -self.range * 3; i <= self.range * 3; i++) {
+		tmp.push(i);
+	}
+	InfiniteScroll.rangeArr = tmp;
 
 	self.currentSlot = 0;
 	self.prevSlot = 0;
@@ -36,6 +43,7 @@ var InfiniteScroll = function(opt) {
 }
 
 InfiniteScroll.viewportHeight = 0;
+InfiniteScroll.rangeArr = [];
 
 InfiniteScroll.state = {
 	visible: 0,
@@ -73,9 +81,9 @@ InfiniteScroll.prototype.getState = function(seq) {
 	var current = this.currentSlot;
 	var distance = Math.abs(current - seq);
 	var state;
-	if (distance >= 3) {
+	if (distance > 2 * this.range) {
 		state = InfiniteScroll.state.removed;
-	} else if (distance >= 2) {
+	} else if (distance > 1 * this.range) {
 		state = InfiniteScroll.state.invisible;
 	} else {
 		state = InfiniteScroll.state.visible;
@@ -126,7 +134,7 @@ InfiniteScroll.prototype.execState = function(arr, state) {
 }
 
 InfiniteScroll.prototype.getSlotArr = function(index) {
-	var a = [-3, -2, -1, 0, 1, 2, 3];
+	var a = InfiniteScroll.rangeArr;
 	var arr = [];
 	var b;
 	for (var i = 0, len = a.length; i < len; i++) {
@@ -140,9 +148,24 @@ InfiniteScroll.prototype.getSlotArr = function(index) {
 
 InfiniteScroll.prototype.execCurrentState = function(current) {
 	var states = InfiniteScroll.state;
-	this.execState([current - 1, current, current + 1], states.visible);
-	this.execState([current - 2, current + 2], states.invisible);
-	this.execState([current - 3, current + 3], states.removed);
+	var range = this.range;
+	var visibleArr = [];
+	var invisibleArr = [];
+	var removedArr = [];
+	var distance;
+	for (var i = current - 3 * range; i <= current + 3 * range; i++) {
+		distance = Math.abs(current - i);
+		if (distance > 2 * this.range) {
+			removedArr.push(i);
+		} else if (distance > 1 * this.range) {
+			invisibleArr.push(i);
+		} else {
+			visibleArr.push(i);
+		}
+	}
+	this.execState(visibleArr, states.visible);
+	this.execState(invisibleArr, states.invisible);
+	this.execState(removedArr, states.removed);
 }
 
 InfiniteScroll.prototype.getCurrent = function() {
