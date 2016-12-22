@@ -59,6 +59,10 @@
 		removed: 2
 	}
 
+	InfiniteScroll.prototype.refresh = function() {
+		this.scrollFn.call(this);
+	}
+
 	InfiniteScroll.prototype.append = function(html) {
 		var wrapper = document.createElement(this.wrapper);
 		var seq = this.slots.length;
